@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# Google OAuth
+credentials.json
+token.json
+.config/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# MCP
+.claude/
+test-unpack/
+
+# Keep the bundle
+!google-mcp-server.mcpb

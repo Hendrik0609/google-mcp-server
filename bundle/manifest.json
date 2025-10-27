@@ -1,0 +1,78 @@
+{
+  "manifest_version": "0.2",
+  "name": "google-mcp-server",
+  "display_name": "Google MCP Server",
+  "version": "1.0.0",
+  "description": "MCP Server for Google Gmail and Calendar with write access",
+  "long_description": "Allows Claude to interact with Gmail (send emails, create drafts) and Google Calendar (create, update, delete events) with full write permissions.",
+  "author": {
+    "name": "Hendrik",
+    "email": "your-email@example.com"
+  },
+  "keywords": [
+    "gmail",
+    "calendar",
+    "google",
+    "email",
+    "productivity"
+  ],
+  "license": "MIT",
+  "server": {
+    "type": "python",
+    "entry_point": "start.py",
+    "mcp_config": {
+      "command": "python3",
+      "args": ["${__dirname}/start.py"],
+      "env": {
+        "PYTHONPATH": "${__dirname}"
+      }
+    }
+  },
+  "compatibility": {
+    "claude_desktop": ">=0.10.0",
+    "platforms": ["darwin", "win32", "linux"],
+    "runtimes": {
+      "python": ">=3.11,<4.0"
+    }
+  },
+  "user_config": {
+    "token_path": {
+      "type": "string",
+      "title": "Google OAuth Token Path",
+      "description": "Path to your Google OAuth token.json file (created by authenticate.py)",
+      "default": "~/.config/google-mcp/token.json",
+      "required": true
+    },
+    "credentials_path": {
+      "type": "string",
+      "title": "Google OAuth Credentials Path",
+      "description": "Path to your Google OAuth credentials.json file",
+      "default": "~/.config/google-mcp/credentials.json",
+      "required": true
+    }
+  },
+  "tools": [
+    {
+      "name": "send_email",
+      "description": "Send an email via Gmail"
+    },
+    {
+      "name": "create_draft",
+      "description": "Create an email draft in Gmail"
+    },
+    {
+      "name": "create_calendar_event",
+      "description": "Create a new Google Calendar event"
+    },
+    {
+      "name": "update_calendar_event",
+      "description": "Update an existing Google Calendar event"
+    },
+    {
+      "name": "delete_calendar_event",
+      "description": "Delete a Google Calendar event"
+    }
+  ],
+  "tools_generated": false,
+  "prompts_generated": false
+}
