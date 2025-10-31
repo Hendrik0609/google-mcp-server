@@ -19,17 +19,34 @@ def check_and_install_dependencies():
     except ImportError:
         print("Installing dependencies...")
         requirements_file = Path(__file__).parent / "requirements.txt"
+
+        # Try with --user first (works on externally-managed systems)
         try:
             subprocess.check_call([
                 sys.executable, "-m", "pip", "install",
                 "-r", str(requirements_file),
+                "--user",
                 "--quiet"
             ])
             print("Dependencies installed successfully!")
             return True
-        except subprocess.CalledProcessError as e:
-            print(f"Error installing dependencies: {e}", file=sys.stderr)
-            return False
+        except subprocess.CalledProcessError:
+            # If --user fails, try with venv
+            print("Creating virtual environment...")
+            venv_path = Path(__file__).parent / "venv"
+            try:
+                subprocess.check_call([sys.executable, "-m", "venv", str(venv_path)])
+                venv_python = venv_path / "bin" / "python"
+                subprocess.check_call([
+                    str(venv_python), "-m", "pip", "install",
+                    "-r", str(requirements_file),
+                    "--quiet"
+                ])
+                print("Dependencies installed in venv!")
+                return True
+            except subprocess.CalledProcessError as e:
+                print(f"Error installing dependencies: {e}", file=sys.stderr)
+                return False
 
 if __name__ == "__main__":
     if not check_and_install_dependencies():

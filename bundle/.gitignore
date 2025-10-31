@@ -3,3 +3,4 @@ credentials.json
 
 # Diese Datei wird erst beim Bundle-Build eingefügt
 # Template bleibt im Repo
+vendor/

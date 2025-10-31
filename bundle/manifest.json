@@ -1,56 +1,26 @@
 {
-  "manifest_version": "0.2",
-  "name": "google-mcp-server",
+  "dxt_version": "0.1",
+  "name": "Google MCP Server",
   "display_name": "Google MCP Server",
   "version": "1.0.0",
-  "description": "MCP Server for Google Gmail and Calendar with write access",
-  "long_description": "Allows Claude to interact with Gmail (send emails, create drafts) and Google Calendar (create, update, delete events) with full write permissions.",
+  "description": "Let Claude access Gmail and Google Calendar with write permissions",
+  "long_description": "This extension allows Claude to interact with your Gmail and Google Calendar, enabling it to send emails, create drafts, and manage calendar events. Perfect for automating email workflows and scheduling tasks.\n\nFeatures:\n- Send emails with HTML formatting\n- Create email drafts\n- Create, update, and delete calendar events\n- Invite attendees to meetings\n\nAuthentication uses OAuth Device Code Flow - no manual configuration needed! Simply authorize when prompted.",
   "author": {
     "name": "Hendrik",
-    "email": "your-email@example.com"
+    "url": "https://github.com/Hendrik0609/google-mcp-server"
   },
+  "homepage": "https://github.com/Hendrik0609/google-mcp-server",
+  "documentation": "https://github.com/Hendrik0609/google-mcp-server#readme",
+  "support": "https://github.com/Hendrik0609/google-mcp-server/issues",
   "keywords": [
     "gmail",
     "calendar",
     "google",
     "email",
-    "productivity"
+    "productivity",
+    "automation"
   ],
   "license": "MIT",
-  "server": {
-    "type": "python",
-    "entry_point": "start.py",
-    "mcp_config": {
-      "command": "python3",
-      "args": ["${__dirname}/start.py"],
-      "env": {
-        "PYTHONPATH": "${__dirname}"
-      }
-    }
-  },
-  "compatibility": {
-    "claude_desktop": ">=0.10.0",
-    "platforms": ["darwin", "win32", "linux"],
-    "runtimes": {
-      "python": ">=3.11,<4.0"
-    }
-  },
-  "user_config": {
-    "token_path": {
-      "type": "string",
-      "title": "Google OAuth Token Path",
-      "description": "Path to your Google OAuth token.json file (created by authenticate.py)",
-      "default": "~/.config/google-mcp/token.json",
-      "required": true
-    },
-    "credentials_path": {
-      "type": "string",
-      "title": "Google OAuth Credentials Path",
-      "description": "Path to your Google OAuth credentials.json file",
-      "default": "~/.config/google-mcp/credentials.json",
-      "required": true
-    }
-  },
   "tools": [
     {
       "name": "send_email",
@@ -73,6 +43,19 @@
       "description": "Delete a Google Calendar event"
     }
   ],
-  "tools_generated": false,
-  "prompts_generated": false
+  "server": {
+    "type": "python",
+    "entry_point": "start.py",
+    "mcp_config": {
+      "command": "python3",
+      "args": ["${__dirname}/start.py"],
+      "env": {
+        "PYTHONPATH": "${__dirname}"
+      }
+    }
+  },
+  "compatibility": {
+    "claude_desktop": ">=0.10.0",
+    "platforms": ["darwin", "win32", "linux"]
+  }
 }

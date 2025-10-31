@@ -190,7 +190,7 @@ Bei Problemen bitte ein Issue auf GitHub erstellen.
 ## SHA-256 Hash
 
 ```
-34f132ccd1b04a308cd6c758a3a5d6d5cccc7adfab1fd625b2a05564fbc86b5f
+02786a45854a3d39016e958f06191deccdf7fe4796be68150d8d7b08ab7e5041
 ```
 
 Verwende diesen Hash um die Integrität des Bundles zu verifizieren.
