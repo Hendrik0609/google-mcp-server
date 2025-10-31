@@ -55,7 +55,7 @@ Wenn dein Admin bereits ein Bundle bereitgestellt hat:
 2. `credentials.json` ins Bundle-Verzeichnis kopieren
 3. Bundle neu packen: `mcpb pack bundle google-mcp-server.mcpb`
 4. Bundle in Claude Desktop installieren
-5. `python3 authenticate.py` ausführen
+5. Claude Desktop starten - Authentifizierung erfolgt automatisch beim ersten Nutzen!
 
 **Option B: Manuelle Installation**
 
@@ -190,9 +190,18 @@ Bei Problemen bitte ein Issue auf GitHub erstellen.
 ## SHA-256 Hash
 
 ```
-c8be61569d8605d15413c46522e4705ee7b25409b8143d0aeeef77bcc85f0843
+34f132ccd1b04a308cd6c758a3a5d6d5cccc7adfab1fd625b2a05564fbc86b5f
 ```
 
 Verwende diesen Hash um die Integrität des Bundles zu verifizieren.
 
 **Hinweis:** Dieses Bundle enthält die OAuth Credentials für das Team. Verteile es nur intern.
+
+## ✨ Neu: Device Code Flow
+
+Die Authentifizierung erfolgt jetzt **automatisch beim ersten Start**:
+- Kein separates `authenticate.py` mehr nötig
+- Starte einfach Claude Desktop
+- Folge den Anweisungen in den Logs
+- Gib den Code bei google.com/device ein
+- Fertig!

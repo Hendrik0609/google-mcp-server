@@ -4,14 +4,23 @@ Dieses Verzeichnis enthält alle Dateien, die ins MCPB Bundle gepackt werden.
 
 ## Dateien
 
-- `server.py` - Haupt-MCP-Server
-- `authenticate.py` - OAuth Authentifizierungs-Script
+- `server.py` - Haupt-MCP-Server (mit Device Code Flow!)
+- `authenticate.py` - OAuth Authentifizierungs-Script (optional)
 - `setup.py` - Dependency-Installation
 - `start.py` - Startup-Wrapper
 - `requirements.txt` - Python Dependencies
 - `manifest.json` - Bundle Metadaten
 - `credentials.json` - **OAuth Credentials (vom Admin eingefügt)**
 - `credentials.json.template` - Template für credentials.json
+
+## ✨ Neu: Automatische Authentifizierung!
+
+Der Server nutzt jetzt **Device Code Flow** - Authentifizierung erfolgt automatisch:
+1. Starte Claude Desktop
+2. Nutze den Server (z.B. "sende eine Email")
+3. Logs zeigen einen Code und Link
+4. Gehe zu google.com/device und gib den Code ein
+5. Fertig!
 
 ## Für Admins: Bundle erstellen
 

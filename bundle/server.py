@@ -21,6 +21,8 @@ from googleapiclient.discovery import build
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import base64
+import sys
+import time
 
 # Scopes mit Schreibzugriff
 SCOPES = [
@@ -42,23 +44,120 @@ class GoogleMCPServer:
         self.gmail_service = None
         self.calendar_service = None
 
-    def authenticate(self):
-        """OAuth 2.0 Authentifizierung - verwendet existierendes Token"""
-        # Token laden
-        if not os.path.exists(TOKEN_PATH):
+    def authenticate_with_device_code(self):
+        """OAuth 2.0 Device Code Flow - Benutzerfreundlich ohne Browser-Popup"""
+        if not os.path.exists(CREDENTIALS_PATH):
             raise FileNotFoundError(
-                f"Token nicht gefunden: {TOKEN_PATH}\n"
-                "Führe zuerst 'python3 authenticate.py' aus, um dich zu authentifizieren."
+                f"Credentials nicht gefunden: {CREDENTIALS_PATH}\n"
+                "Das Bundle wurde nicht korrekt konfiguriert."
             )
 
-        self.creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
+        # Device Code Flow starten
+        from google.auth.transport.requests import Request as AuthRequest
+        from google.oauth2.credentials import Credentials
+        import requests
 
-        # Token erneuern falls abgelaufen
-        if self.creds and self.creds.expired and self.creds.refresh_token:
-            self.creds.refresh(Request())
+        # Client Credentials laden
+        with open(CREDENTIALS_PATH, 'r') as f:
+            creds_data = json.load(f)
+            client_id = creds_data['installed']['client_id']
+            client_secret = creds_data['installed']['client_secret']
+
+        # Device Code anfordern
+        device_code_url = 'https://oauth2.googleapis.com/device/code'
+        device_code_data = {
+            'client_id': client_id,
+            'scope': ' '.join(SCOPES)
+        }
+
+        response = requests.post(device_code_url, data=device_code_data)
+        device_code_response = response.json()
+
+        # User Code und Verification URL ausgeben
+        user_code = device_code_response['user_code']
+        verification_url = device_code_response['verification_url']
+        device_code = device_code_response['device_code']
+
+        print("\n" + "="*60, file=sys.stderr)
+        print("🔐 GOOGLE AUTHENTIFIZIERUNG ERFORDERLICH", file=sys.stderr)
+        print("="*60, file=sys.stderr)
+        print(f"\n1. Öffne: {verification_url}", file=sys.stderr)
+        print(f"2. Gib diesen Code ein: {user_code}", file=sys.stderr)
+        print("\n3. Autorisiere den Zugriff auf Gmail & Calendar", file=sys.stderr)
+        print("\nWarte auf Autorisierung...\n", file=sys.stderr)
+
+        # Polling - warte auf User-Autorisierung
+        token_url = 'https://oauth2.googleapis.com/token'
+        interval = device_code_response.get('interval', 5)
+
+        while True:
+            time.sleep(interval)
+
+            token_data = {
+                'client_id': client_id,
+                'client_secret': client_secret,
+                'device_code': device_code,
+                'grant_type': 'urn:ietf:params:oauth:grant-type:device_code'
+            }
+
+            token_response = requests.post(token_url, data=token_data)
+            token_result = token_response.json()
+
+            if 'error' in token_result:
+                error = token_result['error']
+                if error == 'authorization_pending':
+                    continue  # Weiter warten
+                elif error == 'slow_down':
+                    interval += 1
+                    continue
+                else:
+                    raise Exception(f"Authentifizierung fehlgeschlagen: {error}")
+
+            # Erfolgreich!
+            access_token = token_result['access_token']
+            refresh_token = token_result.get('refresh_token')
+
             # Token speichern
+            os.makedirs(os.path.dirname(TOKEN_PATH), exist_ok=True)
+
+            creds_dict = {
+                'token': access_token,
+                'refresh_token': refresh_token,
+                'token_uri': 'https://oauth2.googleapis.com/token',
+                'client_id': client_id,
+                'client_secret': client_secret,
+                'scopes': SCOPES
+            }
+
             with open(TOKEN_PATH, 'w') as token:
-                token.write(self.creds.to_json())
+                json.dump(creds_dict, token)
+
+            print("\n✅ Authentifizierung erfolgreich!", file=sys.stderr)
+            print(f"Token gespeichert: {TOKEN_PATH}\n", file=sys.stderr)
+
+            self.creds = Credentials.from_authorized_user_info(creds_dict, SCOPES)
+            break
+
+    def authenticate(self):
+        """OAuth 2.0 Authentifizierung - verwendet existierendes Token oder startet Device Flow"""
+        # Token laden falls vorhanden
+        if os.path.exists(TOKEN_PATH):
+            self.creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
+
+            # Token erneuern falls abgelaufen
+            if self.creds and self.creds.expired and self.creds.refresh_token:
+                try:
+                    self.creds.refresh(Request())
+                    # Token speichern
+                    with open(TOKEN_PATH, 'w') as token:
+                        token.write(self.creds.to_json())
+                except Exception as e:
+                    print(f"\n⚠️  Token refresh fehlgeschlagen: {e}", file=sys.stderr)
+                    print("Starte neue Authentifizierung...\n", file=sys.stderr)
+                    self.authenticate_with_device_code()
+        else:
+            # Kein Token vorhanden - Device Code Flow starten
+            self.authenticate_with_device_code()
 
         # Services initialisieren
         self.gmail_service = build('gmail', 'v1', credentials=self.creds)

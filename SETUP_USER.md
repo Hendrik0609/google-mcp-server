@@ -42,27 +42,45 @@ Diese Anleitung ist für **Team-Mitglieder**, die den MCP Server nutzen möchten
 
 ## Schritt 2: OAuth Autorisierung
 
-Nach der Installation musst du **einmalig** deinen Google Account autorisieren:
+Nach der Installation musst du **einmalig** deinen Google Account autorisieren.
 
-1. Öffne Terminal/Kommandozeile
+### Option A: Automatisch beim ersten Start (Empfohlen!)
 
-2. Führe das Authentifizierungs-Script aus:
-   ```bash
-   # Navigiere zum Bundle-Verzeichnis
-   cd /pfad/wo/bundle/installiert/wurde
+1. **Starte Claude Desktop einfach**
+2. **Versuche den Server zu nutzen** (z.B. "Sende eine Test-Email an mich")
+3. **Claude Desktop Logs zeigen:**
+   ```
+   🔐 GOOGLE AUTHENTIFIZIERUNG ERFORDERLICH
+   ============================================================
 
-   # Führe authenticate.py aus
-   python3 authenticate.py
+   1. Öffne: https://www.google.com/device
+   2. Gib diesen Code ein: ABCD-EFGH
+
+   3. Autorisiere den Zugriff auf Gmail & Calendar
+
+   Warte auf Autorisierung...
    ```
 
-3. **Browser öffnet sich automatisch:**
-   - Wähle deinen Google Account (dein persönliches Gmail/Calendar)
-   - Google fragt: "Team MCP Server möchte auf Gmail & Calendar zugreifen"
+4. **Gehe zu google.com/device:**
+   - Gib den angezeigten Code ein
+   - Wähle deinen Google Account
    - Klicke auf **"Zulassen"**
 
-4. **Fertig!**
-   - Terminal zeigt: "Authentifizierung erfolgreich!"
-   - Dein Token wurde gespeichert unter: `~/.config/google-mcp/token.json`
+5. **Fertig!** Claude Desktop funktioniert jetzt automatisch.
+
+### Option B: Manuell vorab (Optional)
+
+Wenn du die Authentifizierung vorab durchführen möchtest:
+
+```bash
+# Navigiere zum Bundle-Verzeichnis
+cd /pfad/wo/bundle/installiert/wurde
+
+# Führe authenticate.py aus
+python3 authenticate.py
+```
+
+Das Script zeigt dir den gleichen Code und Link an.
 
 ## Schritt 3: Claude Desktop neu starten
 
@@ -102,11 +120,20 @@ Nach der Installation kann Claude:
 
 ## Troubleshooting
 
-### "Token nicht gefunden"
-→ Führe `python3 authenticate.py` aus (siehe Schritt 2)
+### "Token nicht gefunden" / Authentifizierung wird angefordert
+→ Das ist normal beim ersten Start! Folge einfach den Anweisungen in den Claude Desktop Logs (siehe Schritt 2, Option A)
 
 ### "Permission denied"
 → Stelle sicher, dass die Scopes korrekt autorisiert wurden. Lösche `~/.config/google-mcp/token.json` und autorisiere erneut.
+
+### Wo finde ich die Claude Desktop Logs?
+```bash
+# macOS
+tail -f ~/Library/Logs/Claude/mcp*.log
+
+# Linux
+tail -f ~/.config/Claude/logs/mcp*.log
+```
 
 ### "Module not found"
 → Installiere Dependencies:
