@@ -16,62 +16,72 @@ MCP Server für Gmail und Google Calendar mit Schreibzugriff.
 
 ## Installation
 
-### Voraussetzungen
+### Für Team-Admins
+
+Wenn du diesen Server für dein Team bereitstellen möchtest:
+
+👉 **Siehe [SETUP_ADMIN.md](SETUP_ADMIN.md)** für die vollständige Anleitung zum Einrichten eines zentralen Google Cloud Projekts.
+
+### Für Team-Mitglieder
+
+Wenn dein Admin bereits ein Bundle bereitgestellt hat:
+
+👉 **Siehe [SETUP_USER.md](SETUP_USER.md)** für die Installationsanleitung.
+
+### Für Einzelnutzer (eigenes Google Cloud Projekt)
+
+<details>
+<summary>Klicke hier für die Einzelnutzer-Anleitung</summary>
+
+#### Voraussetzungen
 
 - Python 3.11 oder höher
 - Google Cloud Project mit aktivierten APIs (Gmail, Calendar)
 - OAuth 2.0 Credentials
 
-### Option 1: MCPB Bundle (Empfohlen)
+#### Schritt 1: Google Cloud Projekt einrichten
 
-1. **Bundle herunterladen**
-   ```bash
-   # Von GitHub Releases
-   wget https://github.com/USERNAME/REPO/releases/download/v1.0.0/google-mcp-server.mcpb
-   ```
+1. Gehe zu [Google Cloud Console](https://console.cloud.google.com)
+2. Erstelle ein neues Projekt
+3. Aktiviere Gmail API und Calendar API
+4. Erstelle OAuth 2.0 Credentials (Desktop App)
+5. Lade `credentials.json` herunter
 
-2. **In Claude Desktop installieren**
-   - Bundle-Datei mit Claude Desktop öffnen
-   - Installation bestätigen
-   - Fertig!
+#### Schritt 2: Installation
 
-3. **Google OAuth einrichten**
+**Option A: MCPB Bundle**
 
-   Erstelle OAuth Credentials in der Google Cloud Console:
-   - Gehe zu https://console.cloud.google.com
-   - Erstelle ein neues Projekt oder wähle ein bestehendes
-   - Aktiviere Gmail API und Calendar API
-   - Erstelle OAuth 2.0 Credentials (Desktop App)
-   - Lade `credentials.json` herunter
+1. Bundle herunterladen
+2. `credentials.json` ins Bundle-Verzeichnis kopieren
+3. Bundle neu packen: `mcpb pack bundle google-mcp-server.mcpb`
+4. Bundle in Claude Desktop installieren
+5. `python3 authenticate.py` ausführen
 
-   Speichere die Credentials:
-   ```bash
-   mkdir -p ~/.config/google-mcp
-   cp credentials.json ~/.config/google-mcp/
-   ```
+**Option B: Manuelle Installation**
 
-4. **Erste Authentifizierung**
-   ```bash
-   python3 authenticate.py
-   ```
-   Dies öffnet einen Browser für die OAuth-Autorisierung und erstellt `~/.config/google-mcp/token.json`.
-
-### Option 2: Manuelle Installation
-
-1. **Repository klonen**
+1. Repository klonen:
    ```bash
    git clone https://github.com/USERNAME/REPO.git
    cd google-mcp-server
    ```
 
-2. **Dependencies installieren**
+2. Dependencies installieren:
    ```bash
    pip install -r requirements.txt
    ```
 
-3. **Google OAuth einrichten** (wie oben)
+3. Credentials konfigurieren:
+   ```bash
+   mkdir -p ~/.config/google-mcp
+   cp credentials.json ~/.config/google-mcp/
+   ```
 
-4. **In Claude Desktop Config eintragen**
+4. Authentifizieren:
+   ```bash
+   python3 authenticate.py
+   ```
+
+5. Claude Desktop Config:
    ```json
    {
      "mcpServers": {
@@ -82,6 +92,8 @@ MCP Server für Gmail und Google Calendar mit Schreibzugriff.
      }
    }
    ```
+
+</details>
 
 ## Verwendung
 
@@ -178,7 +190,9 @@ Bei Problemen bitte ein Issue auf GitHub erstellen.
 ## SHA-256 Hash
 
 ```
-605e44e94c082cd08433105ceacce2e1bf3558b0526ccc528290de09220c018a
+c8be61569d8605d15413c46522e4705ee7b25409b8143d0aeeef77bcc85f0843
 ```
 
 Verwende diesen Hash um die Integrität des Bundles zu verifizieren.
+
+**Hinweis:** Dieses Bundle enthält die OAuth Credentials für das Team. Verteile es nur intern.

@@ -33,7 +33,8 @@ SCOPES = [
 
 # Pfade für Credentials
 TOKEN_PATH = os.path.expanduser('~/.config/google-mcp/token.json')
-CREDENTIALS_PATH = os.path.expanduser('~/.config/google-mcp/credentials.json')
+# credentials.json wird im Bundle mitgeliefert (vom Admin konfiguriert)
+CREDENTIALS_PATH = os.path.join(os.path.dirname(__file__), 'credentials.json')
 
 class GoogleMCPServer:
     def __init__(self):
