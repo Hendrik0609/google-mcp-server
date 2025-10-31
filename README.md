@@ -2,6 +2,17 @@
 
 MCP Server für Gmail und Google Calendar mit Schreibzugriff.
 
+## 🔒 Security Notice
+
+**WICHTIG:** Wenn du dieses Repository vor dem 31. Oktober 2025, 17:00 Uhr geklont hast, enthielt die Git History OAuth Credentials im Bundle. Diese wurden entfernt. Falls du Admin bist:
+
+1. **Erstelle neue OAuth Credentials** in der Google Cloud Console
+2. **Lösche die alten Credentials** (sind kompromittiert)
+3. **Erstelle ein neues Bundle** mit den neuen Credentials
+4. **Verteile das neue Bundle** an dein Team
+
+Details siehe [SETUP_ADMIN.md](SETUP_ADMIN.md).
+
 ## Features
 
 - **Gmail**
@@ -187,15 +198,44 @@ MIT
 
 Bei Problemen bitte ein Issue auf GitHub erstellen.
 
-## SHA-256 Hash
+## ⚠️ WICHTIG: Bundle Distribution
 
-```
-02786a45854a3d39016e958f06191deccdf7fe4796be68150d8d7b08ab7e5041
-```
+**Das Bundle wird NICHT mehr auf GitHub bereitgestellt!**
 
-Verwende diesen Hash um die Integrität des Bundles zu verifizieren.
+### Warum?
+Das Bundle enthält OAuth Credentials (Client ID/Secret) und darf aus Sicherheitsgründen nicht öffentlich verfügbar sein.
 
-**Hinweis:** Dieses Bundle enthält die OAuth Credentials für das Team. Verteile es nur intern.
+### Für Team-Admins
+
+#### Bundle erstellen:
+
+1. **Credentials vorbereiten:**
+   ```bash
+   # Deine credentials.json ins bundle/ Verzeichnis kopieren
+   cp ~/Downloads/credentials.json bundle/credentials.json
+   ```
+
+2. **Bundle packen:**
+   ```bash
+   cd bundle
+   zip -r ../google-mcp-server.mcpb * -x "*.pyc" -x "*__pycache__*"
+   cd ..
+   ```
+
+3. **SHA-256 Hash generieren:**
+   ```bash
+   sha256sum google-mcp-server.mcpb
+   ```
+
+4. **Bundle verteilen via:**
+   - Internes File-Share
+   - Private Cloud-Storage (Nextcloud, OneDrive, etc.)
+   - Direkter Transfer
+   - **NICHT via öffentliches GitHub!**
+
+### Für Team-Mitglieder
+
+Erhalte das Bundle von deinem Admin und folge dann der [SETUP_USER.md](SETUP_USER.md) Anleitung.
 
 ## ✨ Neu: Device Code Flow
 

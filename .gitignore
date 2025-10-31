@@ -27,5 +27,5 @@ token.json
 .claude/
 test-unpack/
 
-# Keep the bundle
-!google-mcp-server.mcpb
+# SECURITY: Never commit bundles with credentials!
+*.mcpb
